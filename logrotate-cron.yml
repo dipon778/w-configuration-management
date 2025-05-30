@@ -1,0 +1,12 @@
+---
+- name: Configure cron job to run logrotate every 10 minutes between 2h and 4h
+  hosts: fra1_hosts
+  become: yes
+  tasks:
+    - name: Ensure cron job for logrotate is present
+      cron:
+        name: "Run logrotate every 10 minutes between 2h and 4h"
+        minute: "*/10"
+        hour: "2-4"
+        job: "/usr/sbin/logrotate /etc/logrotate.conf"
+        state: present

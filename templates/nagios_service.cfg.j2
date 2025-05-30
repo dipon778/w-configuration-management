@@ -1,0 +1,6 @@
+define service {
+  service_description ntp_process
+  host_name {{ host_name }}
+  check_command check_ntp
+  check_interval 10
+}

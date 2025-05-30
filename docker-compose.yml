@@ -1,0 +1,55 @@
+version: '3.8'
+
+networks:
+  fra1_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
+
+services:
+  app-vm1:
+    image: fra1-host:20.04
+    container_name: app-vm1
+    networks:
+      fra1_net:
+        ipv4_address: 192.168.0.2
+    ports:
+      - "2222:22"  # Map host port 2222 to container SSH port 22
+    volumes:
+      - ./hosts.ini:/root/hosts.ini
+    restart: unless-stopped
+
+  db-vm1:
+    image: fra1-host:20.04
+    container_name: db-vm1
+    networks:
+      fra1_net:
+        ipv4_address: 192.168.0.3
+    ports:
+      - "2223:22"  # Map host port 2223 to container SSH port 22
+    volumes:
+      - ./hosts.ini:/root/hosts.ini
+    restart: unless-stopped
+
+  web-vm1:
+    image: fra1-host:20.04
+    container_name: web-vm1
+    networks:
+      fra1_net:
+        ipv4_address: 192.168.0.4
+    ports:
+      - "2224:22"  # Map host port 2224 to container SSH port 22
+    volumes:
+      - ./hosts.ini:/root/hosts.ini
+    restart: unless-stopped
+
+  monitoring:
+    image: fra1-nagios:20.04
+    container_name: monitoring.fra1.internal
+    networks:
+      fra1_net:
+        ipv4_address: 192.168.0.100
+    ports:
+      - "8080:80"  # Map host port 8080 to container port 80 for Nagios web interface
+    restart: unless-stopped

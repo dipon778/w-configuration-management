@@ -1,0 +1,49 @@
+---
+- name: Deploy Nagios monitoring templates
+  hosts: nagios_server
+  become: yes
+  vars:
+    monitored_hosts:
+      - { name: "app-vm1", ip: "192.168.0.2" }
+      - { name: "db-vm1", ip: "192.168.0.3" }
+      - { name: "web-vm1", ip: "192.168.0.4" }
+  tasks:
+    - name: Create Nagios config directory if not exists
+      file:
+        path: /etc/nagios/conf.d/managed_hosts
+        state: directory
+        owner: nagios
+        group: nagios
+        mode: '0755'
+
+    - name: Deploy Nagios host config files
+      template:
+        src: templates/nagios_host.cfg.j2
+        dest: "/etc/nagios/conf.d/managed_hosts/{{ item.name }}_host.cfg"
+        owner: nagios
+        group: nagios
+        mode: '0644'
+      loop: "{{ monitored_hosts }}"
+      loop_control:
+        loop_var: item
+      vars:
+        host_name: "{{ item.name }}"
+        host_ip: "{{ item.ip }}"
+
+    - name: Deploy Nagios service config files
+      template:
+        src: templates/nagios_service.cfg.j2
+        dest: "/etc/nagios/conf.d/managed_hosts/{{ item.name }}_ntp_service.cfg"
+        owner: nagios
+        group: nagios
+        mode: '0644'
+      loop: "{{ monitored_hosts }}"
+      loop_control:
+        loop_var: item
+      vars:
+        host_name: "{{ item.name }}"
+
+    - name: Reload Nagios service
+      service:
+        name: nagios
+        state: reloaded

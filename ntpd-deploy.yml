@@ -1,0 +1,24 @@
+---
+- name: Deploy ntpd package and custom configuration
+  hosts: fra1_hosts
+  become: yes
+  tasks:
+    - name: Install ntpd package
+      apt:
+        name: ntp
+        state: present
+        update_cache: yes
+
+    - name: Deploy custom ntpd.conf
+      template:
+        src: templates/ntpd.conf.j2
+        dest: /etc/ntpd.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Restart ntpd service
+      service:
+        name: ntp
+        state: restarted
+        enabled: yes
