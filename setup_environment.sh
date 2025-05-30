@@ -23,7 +23,7 @@ echo "Step 3: Copy Ansible inventory and playbooks into app-vm1 container"
 docker cp hosts.ini app-vm1:/root/hosts.ini
 docker cp logrotate-cron.yml app-vm1:/root/logrotate-cron.yml
 docker cp ntpd-deploy.yml app-vm1:/root/ntpd-deploy.yml
-docker cp -r templates app-vm1:/root/templates
+docker cp  templates/ app-vm1:/root/templates
 
 echo "Step 4: Run Ansible playbook to configure cron job for logrotate"
 docker exec -it app-vm1 ansible-playbook -i /root/hosts.ini /root/logrotate-cron.yml --ask-become-pass
@@ -33,7 +33,7 @@ docker exec -it app-vm1 ansible-playbook -i /root/hosts.ini /root/ntpd-deploy.ym
 
 echo "Step 6: Copy Nagios playbook and templates into Nagios container"
 docker cp nagios-deploy.yml monitoring.fra1.internal:/root/nagios-deploy.yml
-docker cp -r templates monitoring.fra1.internal:/root/templates
+docker cp templates/ monitoring.fra1.internal:/root/templates
 
 echo "Step 7: Run Ansible playbook to deploy Nagios monitoring templates"
 docker exec -it monitoring.fra1.internal ansible-playbook -i /root/hosts.ini /root/nagios-deploy.yml --ask-become-pass

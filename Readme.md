@@ -25,10 +25,10 @@ Follow these steps to get your project up and running.
 ## Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/yourproject.git
+git clone https://github.com/dipon778/w-configuration-management.git
 
 # Navigate to project directory
-cd yourproject
+cd w-configuration-management
 
 # Build the Docker image for app servers
 docker build -t fra1-host:20.04 .
